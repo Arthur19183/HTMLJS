@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.sap-fico-beratung.ch/sitemap.xml
