@@ -1,0 +1,16 @@
+# Dependencies / temp
+_pdf-tools/
+node_modules/
+.tools/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.tmp
+.vscode/
+.idea/
+
+# Local extracts
+_content-extract/
+_projekte-extract.txt
+*.log
