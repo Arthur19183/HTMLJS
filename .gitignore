@@ -14,3 +14,6 @@ Thumbs.db
 _content-extract/
 _projekte-extract.txt
 *.log
+
+# Infomaniak mail credentials (never commit)
+config.local.php

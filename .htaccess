@@ -1,0 +1,8 @@
+# Zugriff auf lokale Mail-Zugangsdaten sperren
+<Files "config.local.php">
+  Require all denied
+</Files>
+
+<Files "config.example.php">
+  Require all denied
+</Files>

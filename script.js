@@ -101,7 +101,7 @@ if ("IntersectionObserver" in window) {
   revealEls.forEach((el) => el.classList.add("is-visible"));
 }
 
-form?.addEventListener("submit", (event) => {
+form?.addEventListener("submit", async (event) => {
   const data = new FormData(form);
   const name = String(data.get("name") || "").trim();
   const email = String(data.get("email") || "").trim();
@@ -115,7 +115,7 @@ form?.addEventListener("submit", (event) => {
     return;
   }
 
-  // Lokal (file://): E-Mail-Programm öffnen
+  // Lokal (file://): kein PHP-Server – E-Mail-Programm öffnen
   if (window.location.protocol === "file:") {
     event.preventDefault();
     const subject = encodeURIComponent(`Anfrage über Website – ${name}`);
@@ -123,14 +123,33 @@ form?.addEventListener("submit", (event) => {
       `Name: ${name}\nE-Mail: ${email}\n\nNachricht:\n${message}`
     );
     formNote.textContent = "Ihr E-Mail-Programm öffnet sich …";
-    window.location.href = `mailto:arthurgubler@mail.ch?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:kontakt@sap-fico-beratung.ch?subject=${subject}&body=${body}`;
     return;
   }
 
-  // Online: Versand über FormSubmit an arthurgubler@mail.ch
-  const next = form.querySelector('input[name="_next"]');
-  if (next) {
-    next.value = `${window.location.origin}${window.location.pathname}#kontakt`;
-  }
+  // Online: AJAX an Infomaniak contact.php (SMTP)
+  event.preventDefault();
   formNote.textContent = "Nachricht wird gesendet …";
+  data.set("ajax", "1");
+
+  try {
+    const response = await fetch(form.action || "contact.php", {
+      method: "POST",
+      body: data,
+      headers: { Accept: "application/json" },
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.ok) {
+      formNote.textContent =
+        result.message ||
+        "Senden fehlgeschlagen. Bitte schreiben Sie an kontakt@sap-fico-beratung.ch.";
+      return;
+    }
+    form.reset();
+    formNote.textContent =
+      result.message || "Vielen Dank – Ihre Nachricht wurde gesendet.";
+  } catch {
+    formNote.textContent =
+      "Senden fehlgeschlagen. Bitte schreiben Sie an kontakt@sap-fico-beratung.ch.";
+  }
 });
