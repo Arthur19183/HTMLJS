@@ -105,23 +105,15 @@ form?.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const data = new FormData(form);
-  const name = String(data.get("name") || "").trim();
-  const email = String(data.get("email") || "").trim();
-  const message = String(data.get("message") || "").trim();
   const privacyConfirmed = data.get("datenschutz_bestaetigt") === "Ja";
 
-  if (!name || !email || !message || !privacyConfirmed) {
-    formNote.textContent =
-      "Bitte alle Felder ausfüllen und die Datenschutzerklärung bestätigen.";
+  if (!privacyConfirmed) {
+    formNote.textContent = "Bitte die Datenschutzerklärung bestätigen.";
     return;
   }
 
-  const subject = encodeURIComponent(`Anfrage über Website – ${name}`);
-  const body = encodeURIComponent(
-    `Name: ${name}\nE-Mail: ${email}\n\nNachricht:\n${message}`
-  );
-
+  const subject = encodeURIComponent("Anfrage über Website");
   formNote.textContent =
     "Ihr E-Mail-Programm öffnet sich. Bitte die Nachricht dort absenden.";
-  window.location.href = `mailto:kontakt@sap-fico-beratung.ch?subject=${subject}&body=${body}`;
+  window.location.href = `mailto:kontakt@sap-fico-beratung.ch?subject=${subject}`;
 });
